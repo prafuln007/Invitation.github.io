@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Praful & Sushmita — Wedding Invitation</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=Tangerine:wght@400;700&display=swap"
+            rel="stylesheet" />
+        <style>
+            :root {
+                --accent: #c9a84c;
+                --accent-border: rgba(201, 168, 76, 0.2);
+                --accent-soft: rgba(201, 168, 76, 0.08);
+                --dark: #2d3436;
+                --rose: #c9a84c;
+                --text: #2d3436;
+                --text-sec: #636e72;
+                --text-muted: #b2bec3;
+                --border: rgba(45, 52, 54, 0.06);
+                --serif: 'DM Serif Display', Georgia, serif;
+                --sans: 'Inter', system-ui, sans-serif;
+                --script: 'Tangerine', cursive;
+            }
+
+            *,
+            *::before,
+            *::after {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box
+            }
+
+            /* No scrollbar, no overflow — we control everything */
+            html,
+            body {
+                height: 100%;
+                overflow: hidden;
+                font-family: var(--sans);
+                color: var(--text);
+                line-height: 1.6;
+                -webkit-font-smoothing: antialiased;
+            }
+
+            a {
+                text-decoration: none;
+                color: inherit
+            }
+
+            /* === Fullscreen container === */
+            #app {
+                position: relative;
+                width: 100%;
+                height: 100%;
+                overflow: hidden
+            }
+
+            /* === Each section === */
+            .section {
+                position: absolute;
+                inset: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                padding: 40px 24px;
+                opacity: 0;
+                transform: translateY(60px);
+                pointer-events: none;
+                transition: opacity .6s ease, transform .6s ease;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+
+            .section.active {
+                opacity: 1;
+                transform: translateY(0);
+                pointer-events: auto;
+                z-index: 2;
+            }
+
+            .section.exit-up {
+                opacity: 0;
+                transform: translateY(-60px);
+                pointer-events: none;
+            }
+
+            .section.exit-down {
+                opacity: 0;
+                transform: translateY(60px);
+                pointer-events: none;
+            }
+
+            /* === Shared === */
+            .inner {
+                max-width: 660px;
+                width: 100%;
+                margin: 0 auto
+            }
+
+            .divider {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 12px;
+                margin: 16px auto
+            }
+
+            .dv-line {
+                width: 28px;
+                height: 1px;
+                background: linear-gradient(90deg, transparent, var(--accent), transparent)
+            }
+
+            .dv-dot {
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                background: var(--accent);
+                opacity: .4
+            }
+
+            .s-label {
+                font-size: .6rem;
+                letter-spacing: 4px;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 8px;
+                font-weight: 500
+            }
+
+            .s-title {
+                font-family: var(--serif);
+                font-size: clamp(1.6rem, 5vw, 2.4rem);
+                color: var(--text);
+                font-weight: 400;
+                line-height: 1.25
+            }
+
+            /* === Dot Nav === */
+            .dot-nav {
+                position: fixed;
+                right: 14px;
+                top: 50%;
+                transform: translateY(-50%);
+                z-index: 100;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .dot-nav button {
+                width: 8px;
+                height: 8px;
+                border-radius: 50%;
+                border: none;
+                cursor: pointer;
+                background: var(--text-muted);
+                opacity: .25;
+                transition: opacity .3s, transform .3s, background .3s;
+            }
+
+            .dot-nav button.active {
+                opacity: 1;
+                background: var(--accent);
+                transform: scale(1.4)
+            }
+
+            /* ==============================
+       1. HERO
+    ============================== */
+            .hero {
+                background: linear-gradient(160deg, #4a1942 0%, #2d1b4e 100%)
+            }
+
+            .hero .hero-pre {
+                color: #e07a5f
+            }
+
+            .hero .hero-name {
+                color: #ffffff
+            }
+
+            .hero .hero-and {
+                color: #e07a5f
+            }
+
+            .hero .hero-tagline {
+                color: rgba(255, 255, 255, 0.5)
+            }
+
+            .hero .hero-badge {
+                background: rgba(255, 255, 255, .06);
+                border-color: rgba(224, 122, 95, 0.25)
+            }
+
+            .hero .hero-badge span {
+                color: #e07a5f
+            }
+
+            .hero .hero-badge .sep {
+                background: #e07a5f
+            }
+
+            .hero .scroll-hint {
+                color: rgba(255, 255, 255, 0.3)
+            }
+
+            .hero .scroll-hint .bar {
+                background: linear-gradient(180deg, #e07a5f, transparent)
+            }
+
+            .hero .dv-line {
+                background: linear-gradient(90deg, transparent, #e07a5f, transparent)
+            }
+
+            .hero .dv-dot {
+                background: #e07a5f
+            }
+
+            /* Floating hearts — bigger, more */
+            .float-hearts {
+                position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+            }
+            .fh {
+                position: absolute;
+                opacity: 0.12;
+                animation: floatUp linear infinite;
+                color: #d4a853;
+            }
+            .fh:nth-child(1)  { left: 3%;  font-size: 2.2rem; animation-duration: 11s; animation-delay: 0s; }
+            .fh:nth-child(2)  { left: 12%; font-size: 1.6rem; animation-duration: 14s; animation-delay: -2s; }
+            .fh:nth-child(3)  { left: 22%; font-size: 2.8rem; animation-duration: 12s; animation-delay: -6s; }
+            .fh:nth-child(4)  { left: 32%; font-size: 1.4rem; animation-duration: 16s; animation-delay: -1s; }
+            .fh:nth-child(5)  { left: 42%; font-size: 2.5rem; animation-duration: 13s; animation-delay: -8s; }
+            .fh:nth-child(6)  { left: 52%; font-size: 1.8rem; animation-duration: 15s; animation-delay: -4s; }
+            .fh:nth-child(7)  { left: 62%; font-size: 3rem;   animation-duration: 10s; animation-delay: -7s; }
+            .fh:nth-child(8)  { left: 72%; font-size: 2rem;   animation-duration: 17s; animation-delay: -3s; }
+            .fh:nth-child(9)  { left: 82%; font-size: 2.4rem; animation-duration: 12s; animation-delay: -10s; }
+            .fh:nth-child(10) { left: 90%; font-size: 1.5rem; animation-duration: 14s; animation-delay: -5s; }
+            .fh:nth-child(11) { left: 7%;  font-size: 1.9rem; animation-duration: 18s; animation-delay: -12s; }
+            .fh:nth-child(12) { left: 48%; font-size: 2.6rem; animation-duration: 11s; animation-delay: -9s; }
+            .fh:nth-child(13) { left: 27%; font-size: 1.7rem; animation-duration: 15s; animation-delay: -14s; }
+            .fh:nth-child(14) { left: 75%; font-size: 2.1rem; animation-duration: 13s; animation-delay: -11s; }
+            .fh:nth-child(15) { left: 58%; font-size: 1.3rem; animation-duration: 16s; animation-delay: -13s; }
+            @keyframes floatUp {
+                0%   { bottom: -12%; opacity: 0; transform: translateX(0) rotate(0deg) scale(0.4); }
+                10%  { opacity: 0.14; }
+                30%  { transform: translateX(18px) rotate(15deg) scale(0.9); }
+                50%  { opacity: 0.1; transform: translateX(-12px) rotate(-10deg) scale(1); }
+                70%  { transform: translateX(15px) rotate(8deg) scale(0.95); }
+                90%  { opacity: 0.12; }
+                100% { bottom: 110%; opacity: 0; transform: translateX(-10px) rotate(-5deg) scale(0.6); }
+            }
+
+            /* Sparkle / twinkle stars — more, varied sizes */
+            .sparkles {
+                position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+            }
+            .sparkle {
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255,255,255,0.5);
+                animation: twinkle ease-in-out infinite;
+            }
+            .sparkle:nth-child(1)  { top: 8%;  left: 10%;  width: 4px; height: 4px; animation-duration: 2.5s; }
+            .sparkle:nth-child(2)  { top: 18%; right: 15%;  width: 3px; height: 3px; animation-duration: 3.2s; animation-delay: -0.8s; }
+            .sparkle:nth-child(3)  { top: 30%; left: 5%;   width: 5px; height: 5px; animation-duration: 2.8s; animation-delay: -1.5s; }
+            .sparkle:nth-child(4)  { top: 42%; right: 8%;  width: 3px; height: 3px; animation-duration: 3.5s; animation-delay: -0.3s; }
+            .sparkle:nth-child(5)  { top: 55%; left: 20%;  width: 4px; height: 4px; animation-duration: 2.2s; animation-delay: -2s; }
+            .sparkle:nth-child(6)  { top: 15%; left: 65%;  width: 5px; height: 5px; animation-duration: 3s;   animation-delay: -1s; }
+            .sparkle:nth-child(7)  { top: 70%; right: 20%; width: 3px; height: 3px; animation-duration: 2.6s; animation-delay: -2.5s; }
+            .sparkle:nth-child(8)  { top: 82%; left: 40%;  width: 4px; height: 4px; animation-duration: 3.8s; animation-delay: -0.5s; }
+            .sparkle:nth-child(9)  { top: 25%; left: 45%;  width: 2px; height: 2px; animation-duration: 2s;   animation-delay: -1.8s; }
+            .sparkle:nth-child(10) { top: 65%; right: 35%; width: 5px; height: 5px; animation-duration: 3.3s; animation-delay: -2.8s; }
+            .sparkle:nth-child(11) { top: 90%; left: 15%;  width: 3px; height: 3px; animation-duration: 2.4s; animation-delay: -3s; }
+            .sparkle:nth-child(12) { top: 48%; left: 78%;  width: 4px; height: 4px; animation-duration: 2.7s; animation-delay: -1.2s; }
+            .sparkle:nth-child(13) { top: 35%; right: 42%; width: 2px; height: 2px; animation-duration: 3.6s; animation-delay: -0.7s; }
+            .sparkle:nth-child(14) { top: 78%; left: 60%;  width: 5px; height: 5px; animation-duration: 2.3s; animation-delay: -2.2s; }
+            .sparkle:nth-child(15) { top: 12%; right: 50%; width: 3px; height: 3px; animation-duration: 3.1s; animation-delay: -3.2s; }
+            @keyframes twinkle {
+                0%, 100% { opacity: 0; transform: scale(0.3); }
+                50% { opacity: 1; transform: scale(1.5); }
+            }
+
+            /* Light section variants */
+            .light-hearts .fh {
+                color: #c89b30;
+                opacity: 0.18;
+            }
+
+            .hero-mandala {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: min(78vw, 440px);
+                aspect-ratio: 1;
+                opacity: .08;
+                pointer-events: none
+            }
+
+            .corner {
+                position: absolute;
+                width: clamp(50px, 14vw, 95px);
+                opacity: .15;
+                pointer-events: none
+            }
+
+            .c-tl {
+                top: 8px;
+                left: 8px
+            }
+
+            .c-tr {
+                top: 8px;
+                right: 8px;
+                transform: scaleX(-1)
+            }
+
+            .c-bl {
+                bottom: 8px;
+                left: 8px;
+                transform: scaleY(-1)
+            }
+
+            .c-br {
+                bottom: 8px;
+                right: 8px;
+                transform: scale(-1)
+            }
+
+            .hero-content {
+                position: relative;
+                z-index: 2
+            }
+
+            .hero-pre {
+                font-size: .6rem;
+                letter-spacing: 4px;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 22px;
+                font-weight: 400
+            }
+
+            .hero-name {
+                font-family: var(--script);
+                font-size: clamp(3.8rem, 14vw, 7.5rem);
+                font-weight: 700;
+                color: var(--text);
+                line-height: .78
+            }
+
+            .hero-and {
+                font-size: clamp(1.6rem, 5vw, 2.4rem);
+                color: var(--rose);
+                display: block;
+                margin: 10px 0 6px;
+                animation: heartPulse 1.8s ease-in-out infinite
+            }
+
+            @keyframes heartPulse {
+
+                0%,
+                100% {
+                    transform: scale(1)
+                }
+
+                15% {
+                    transform: scale(1.2)
+                }
+
+                30% {
+                    transform: scale(1)
+                }
+
+                45% {
+                    transform: scale(1.15)
+                }
+            }
+
+            .hero-tagline {
+                font-family: var(--serif);
+                font-size: clamp(.82rem, 2.3vw, .98rem);
+                color: var(--text-sec);
+                max-width: 330px;
+                margin: 22px auto 0;
+                font-style: italic;
+                line-height: 1.85
+            }
+
+            .hero-badge {
+                margin-top: 28px;
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 10px 24px;
+                border: 1px solid var(--accent-border);
+                border-radius: 60px;
+                background: rgba(255, 255, 255, .5);
+                backdrop-filter: blur(6px)
+            }
+
+            .hero-badge span {
+                font-size: .66rem;
+                letter-spacing: 2.5px;
+                text-transform: uppercase;
+                color: var(--accent);
+                font-weight: 500
+            }
+
+            .hero-badge .sep {
+                width: 3px;
+                height: 3px;
+                border-radius: 50%;
+                background: var(--accent);
+                opacity: .3
+            }
+
+            .scroll-hint {
+                position: absolute;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                color: var(--text-muted);
+                font-size: .48rem;
+                letter-spacing: 2px;
+                text-transform: uppercase
+            }
+
+            .scroll-hint .bar {
+                width: 1px;
+                height: 20px;
+                background: linear-gradient(180deg, var(--accent), transparent);
+                animation: bp 2s ease-in-out infinite
+            }
+
+            @keyframes bp {
+
+                0%,
+                100% {
+                    opacity: 1;
+                    transform: scaleY(1)
+                }
+
+                50% {
+                    opacity: .2;
+                    transform: scaleY(.3);
+                    transform-origin: top
+                }
+            }
+
+            /* 2. COUNTDOWN */
+            .countdown-p {
+                background: #fafafa
+            }
+
+            .cd-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+                margin-top: 26px;
+                max-width: 320px;
+                margin-left: auto;
+                margin-right: auto
+            }
+
+            .cd-box {
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 16px 4px
+            }
+
+            .cd-num {
+                font-family: var(--serif);
+                font-size: clamp(1.6rem, 5vw, 2.4rem);
+                color: var(--accent);
+                line-height: 1
+            }
+
+            .cd-lbl {
+                font-size: .48rem;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: var(--text-muted);
+                margin-top: 5px
+            }
+
+            /* 3. DETAILS */
+            .details-p {
+                background: #f5f5f5
+            }
+
+            .d-grid {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 28px;
+                width: 100%
+            }
+
+            .d-card {
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 24px 16px;
+                text-align: center
+            }
+
+            .d-icon {
+                width: 42px;
+                height: 42px;
+                border-radius: 50%;
+                background: var(--accent-soft);
+                border: 1px solid var(--accent-border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 12px;
+                font-size: 1.1rem
+            }
+
+            .d-card h3 {
+                font-size: .58rem;
+                letter-spacing: 2.5px;
+                text-transform: uppercase;
+                color: var(--accent);
+                margin-bottom: 8px;
+                font-weight: 600
+            }
+
+            .d-card p {
+                color: var(--text-sec);
+                font-size: .84rem;
+                line-height: 1.65
+            }
+
+            .d-card .big {
+                font-family: var(--serif);
+                font-size: 1.1rem;
+                color: var(--text);
+                display: block;
+                margin-bottom: 1px
+            }
+
+            .map-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                margin-top: 10px;
+                padding: 8px 16px;
+                border: 1px solid var(--accent-border);
+                border-radius: 30px;
+                color: var(--accent);
+                font-size: .58rem;
+                font-weight: 500;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                transition: all .25s
+            }
+
+            .map-btn:hover {
+                background: var(--accent);
+                color: #fff;
+                border-color: var(--accent)
+            }
+
+            @media(min-width:520px) {
+                .d-grid {
+                    flex-direction: row;
+                    gap: 12px
+                }
+
+                .d-card {
+                    flex: 1
+                }
+            }
+
+            /* 4. EVENTS */
+            .events-p {
+                background: #fafafa
+            }
+
+            .ev-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                margin-top: 28px;
+                width: 100%
+            }
+
+            .ev-card {
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 16px;
+                padding: 18px 16px;
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                text-align: left
+            }
+
+            .ev-dot {
+                flex-shrink: 0;
+                width: 38px;
+                height: 38px;
+                border-radius: 50%;
+                background: var(--accent-soft);
+                border: 1.5px solid var(--accent-border);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1rem
+            }
+
+            .ev-body h3 {
+                font-family: var(--serif);
+                font-size: 1rem;
+                color: var(--text);
+                margin-bottom: 2px
+            }
+
+            .ev-meta {
+                font-size: .55rem;
+                color: var(--accent);
+                font-weight: 500;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                margin-bottom: 6px
+            }
+
+            .ev-body p:last-child {
+                color: var(--text-sec);
+                font-size: .78rem;
+                line-height: 1.7
+            }
+
+            @media(min-width:520px) {
+                .ev-list {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 10px
+                }
+            }
+
+            /* 5. FOOTER */
+            .footer-p {
+                background: linear-gradient(160deg, #2d1b4e 0%, #4a1942 100%)
+            }
+
+            .footer-p .f-msg {
+                color: #ffffff
+            }
+
+            .footer-p .f-sub {
+                color: rgba(255, 255, 255, 0.35)
+            }
+
+            .footer-p .f-names {
+                color: #e07a5f
+            }
+
+            .footer-p .f-copy {
+                color: rgba(255, 255, 255, 0.2)
+            }
+
+            .footer-p .top-btn {
+                border-color: rgba(224, 122, 95, 0.3);
+                color: #e07a5f
+            }
+
+            .footer-p .top-btn:hover {
+                background: #e07a5f;
+                color: #2d3436;
+                border-color: #e07a5f
+            }
+
+            .footer-p .dv-line {
+                background: linear-gradient(90deg, transparent, #e07a5f, transparent)
+            }
+
+            .footer-p .dv-dot {
+                background: #e07a5f
+            }
+
+            .f-heart {
+                font-size: 1.3rem;
+                margin-bottom: 16px;
+                display: inline-block;
+                animation: fh 3s ease-in-out infinite
+            }
+
+            @keyframes fh {
+
+                0%,
+                100% {
+                    transform: translateY(0)
+                }
+
+                50% {
+                    transform: translateY(-4px)
+                }
+            }
+
+            .f-msg {
+                font-family: var(--serif);
+                font-size: clamp(1.1rem, 4vw, 1.7rem);
+                font-style: italic;
+                color: var(--text);
+                margin-bottom: 5px;
+                line-height: 1.5
+            }
+
+            .f-sub {
+                font-size: .74rem;
+                color: var(--text-muted);
+                margin-bottom: 22px;
+                font-weight: 300
+            }
+
+            .f-names {
+                font-family: var(--script);
+                font-size: clamp(2.2rem, 8vw, 3rem);
+                font-weight: 700;
+                color: var(--accent);
+                margin-bottom: 24px
+            }
+
+            .top-btn {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 34px;
+                height: 34px;
+                border: 1px solid var(--accent-border);
+                border-radius: 50%;
+                color: var(--accent);
+                font-size: .78rem;
+                transition: all .25s;
+                margin-bottom: 16px;
+                cursor: pointer;
+                background: none
+            }
+
+            .top-btn:hover {
+                background: var(--accent);
+                color: #fff;
+                border-color: var(--accent)
+            }
+
+            .f-copy {
+                font-size: .52rem;
+                color: var(--text-muted);
+                letter-spacing: 1.5px
+            }
+
+            @media(max-width:480px) {
+                .section {
+                    padding: 32px 16px
+                }
+
+                .ev-card {
+                    padding: 14px 12px;
+                    gap: 10px
+                }
+
+                .ev-dot {
+                    width: 34px;
+                    height: 34px;
+                    font-size: .88rem
+                }
+
+                .d-card {
+                    padding: 20px 12px
+                }
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div id="app">
+
+            <!-- Dot Nav -->
+            <nav class="dot-nav" id="dotNav"></nav>
+
+            <!-- 1. HERO -->
+            <div class="section hero active" data-index="0">
+                <div class="float-hearts">
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                </div>
+                <div class="sparkles">
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                </div>
+                <svg class="hero-mandala" viewBox="0 0 400 400" fill="none">
+                    <circle cx="200" cy="200" r="180" stroke="#e07a5f" stroke-width=".5" />
+                    <circle cx="200" cy="200" r="140" stroke="#e07a5f" stroke-width=".5" />
+                    <circle cx="200" cy="200" r="100" stroke="#e07a5f" stroke-width=".5" />
+                    <circle cx="200" cy="200" r="60" stroke="#e07a5f" stroke-width=".5" />
+                    <g stroke="#e07a5f" stroke-width=".3">
+                        <ellipse cx="200" cy="200" rx="28" ry="180" />
+                        <ellipse cx="200" cy="200" rx="28" ry="180" transform="rotate(30 200 200)" />
+                        <ellipse cx="200" cy="200" rx="28" ry="180" transform="rotate(60 200 200)" />
+                        <ellipse cx="200" cy="200" rx="28" ry="180" transform="rotate(90 200 200)" />
+                        <ellipse cx="200" cy="200" rx="28" ry="180" transform="rotate(120 200 200)" />
+                        <ellipse cx="200" cy="200" rx="28" ry="180" transform="rotate(150 200 200)" />
+                    </g>
+                    <g stroke="#e07a5f" stroke-width=".25" fill="none">
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(30 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(60 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(90 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(120 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(150 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(180 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(210 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(240 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(270 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(300 200 200)" />
+                        <path d="M200 20Q218 100 200 140Q182 100 200 20Z" transform="rotate(330 200 200)" />
+                    </g>
+                </svg>
+                <svg class="corner c-tl" viewBox="0 0 120 120" fill="none">
+                    <path d="M10 110Q10 55 45 38Q22 28 10 8" stroke="#e07a5f" stroke-width="1.5" />
+                    <path d="M10 110Q32 78 62 68Q42 48 32 8" stroke="#e07a5f" stroke-width="1" />
+                    <circle cx="42" cy="38" r="3" fill="#e07a5f" opacity=".3" />
+                </svg>
+                <svg class="corner c-tr" viewBox="0 0 120 120" fill="none">
+                    <path d="M10 110Q10 55 45 38Q22 28 10 8" stroke="#e07a5f" stroke-width="1.5" />
+                    <path d="M10 110Q32 78 62 68Q42 48 32 8" stroke="#e07a5f" stroke-width="1" />
+                    <circle cx="42" cy="38" r="3" fill="#e07a5f" opacity=".3" />
+                </svg>
+                <svg class="corner c-bl" viewBox="0 0 120 120" fill="none">
+                    <path d="M10 110Q10 55 45 38Q22 28 10 8" stroke="#e07a5f" stroke-width="1.5" />
+                    <circle cx="42" cy="38" r="3" fill="#e07a5f" opacity=".3" />
+                </svg>
+                <svg class="corner c-br" viewBox="0 0 120 120" fill="none">
+                    <path d="M10 110Q10 55 45 38Q22 28 10 8" stroke="#e07a5f" stroke-width="1.5" />
+                    <circle cx="42" cy="38" r="3" fill="#e07a5f" opacity=".3" />
+                </svg>
+                <div class="hero-content">
+                    <p class="hero-pre">Together with their families</p>
+                    <div class="hero-name">Praful</div>
+                    <span class="hero-and">&#10084;</span>
+                    <div class="hero-name">Sushmita</div>
+                    <div class="divider">
+                        <div class="dv-line"></div>
+                        <div class="dv-dot"></div>
+                        <div class="dv-line"></div>
+                    </div>
+                    <p class="hero-tagline">Request the pleasure of your company at the celebration of their marriage
+                    </p>
+                    <div class="hero-badge"><span>13</span>
+                        <div class="sep"></div><span>May</span>
+                        <div class="sep"></div><span>2026</span>
+                    </div>
+                </div>
+                <div class="scroll-hint"><span>Scroll</span>
+                    <div class="bar"></div>
+                </div>
+            </div>
+
+            <!-- 2. COUNTDOWN -->
+            <div class="section countdown-p" data-index="1">
+                <div class="float-hearts light-hearts">
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                </div>
+                <div class="inner">
+                    <div class="s-label">Counting Down To</div>
+                    <div class="s-title">The Big Day</div>
+                    <div class="divider">
+                        <div class="dv-line"></div>
+                        <div class="dv-dot"></div>
+                        <div class="dv-line"></div>
+                    </div>
+                    <div class="cd-grid">
+                        <div class="cd-box">
+                            <div class="cd-num" id="cd-d">--</div>
+                            <div class="cd-lbl">Days</div>
+                        </div>
+                        <div class="cd-box">
+                            <div class="cd-num" id="cd-h">--</div>
+                            <div class="cd-lbl">Hours</div>
+                        </div>
+                        <div class="cd-box">
+                            <div class="cd-num" id="cd-m">--</div>
+                            <div class="cd-lbl">Min</div>
+                        </div>
+                        <div class="cd-box">
+                            <div class="cd-num" id="cd-s">--</div>
+                            <div class="cd-lbl">Sec</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. DETAILS -->
+            <div class="section details-p" data-index="2">
+                <div class="inner">
+                    <div class="s-label">Save The Date</div>
+                    <h2 class="s-title">Wedding Details</h2>
+                    <div class="divider">
+                        <div class="dv-line"></div>
+                        <div class="dv-dot"></div>
+                        <div class="dv-line"></div>
+                    </div>
+                    <div class="d-grid">
+                        <div class="d-card">
+                            <div class="d-icon">&#128197;</div>
+                            <h3>Date</h3>
+                            <span class="big">Wednesday</span>
+                            <p>13th May 2026</p>
+                        </div>
+                        <div class="d-card">
+                            <div class="d-icon">&#128336;</div>
+                            <h3>Time</h3>
+                            <span class="big">10:36 AM</span>
+                            <p>Shubh Muhurat</p>
+                        </div>
+                        <div class="d-card">
+                            <div class="d-icon">&#127963;</div>
+                            <h3>Venue</h3>
+                            <p>Shri Wankhede Celebration<br>Hall &amp; Lawn</p>
+                            <p style="margin-top:3px;font-size:.74rem;color:var(--text-muted)">Umred Road, Nagpur</p>
+                            <a href="https://www.google.com/maps?rlz=1C1ONGR_enIN1005IN1006&gs_lcrp=EgZjaHJvbWUqCggCEAAYCBgNGB4yBggAEEUYOTIJCAEQABgNGIAEMgoIAhAAGAgYDRgeMgoIAxAAGAgYDRgeMg0IBBAAGIYDGIAEGIoFMg0IBRAAGIYDGIAEGIoFMg0IBhAAGIYDGIAEGIoFMg0IBxAAGIYDGIAEGIoFMg0ICBAAGIYDGIAEGIoFMgcICRAAGO8F0gEJMTQzOTVqMGo3qAIAsAIA&um=1&ie=UTF-8&fb=1&gl=in&sa=X&geocode=KecdJnAXudQ7MYNlZtO4Z3rY&daddr=3557%2BPPC,+Umred+Rd,+Kalamana,+Maharashtra+441204"
+                                target="_blank" rel="noopener" class="map-btn">View on Map &#8594;</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. EVENTS -->
+            <div class="section events-p" data-index="3">
+                <div class="inner">
+                    <div class="s-label">Celebrations</div>
+                    <h2 class="s-title">Wedding Events</h2>
+                    <div class="divider">
+                        <div class="dv-line"></div>
+                        <div class="dv-dot"></div>
+                        <div class="dv-line"></div>
+                    </div>
+                    <div class="ev-list">
+                        <div class="ev-card">
+                            <div class="ev-dot">&#9788;</div>
+                            <div class="ev-body">
+                                <h3>Haldi Ceremony</h3>
+                                <p class="ev-meta">12 May 2026 &middot; 10:00 AM</p>
+                                <p>A vibrant ceremony where turmeric paste blesses the couple with radiance and
+                                    prosperity.</p>
+                            </div>
+                        </div>
+                        <div class="ev-card">
+                            <div class="ev-dot">&#10053;</div>
+                            <div class="ev-body">
+                                <h3>Mehndi Night</h3>
+                                <p class="ev-meta">12 May 2026 &middot; 6:00 PM</p>
+                                <p>An evening of music, dance, and beautiful henna art celebrating love and
+                                    togetherness.</p>
+                            </div>
+                        </div>
+                        <div class="ev-card">
+                            <div class="ev-dot">&#128141;</div>
+                            <div class="ev-body">
+                                <h3>Wedding Ceremony</h3>
+                                <p class="ev-meta">13 May 2026 &middot; 10:36 AM</p>
+                                <p>The sacred ceremony where two souls unite with blessings and the warmth of loved
+                                    ones.</p>
+                            </div>
+                        </div>
+                        <div class="ev-card">
+                            <div class="ev-dot">&#127878;</div>
+                            <div class="ev-body">
+                                <h3>Grand Reception</h3>
+                                <p class="ev-meta">14 May 2026 &middot; 6:30 PM</p>
+                                <p>A grand evening of dinner, toasts, and dancing to honor the newlyweds.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. FOOTER -->
+            <div class="section footer-p" data-index="4">
+                <div class="float-hearts">
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                    <div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div><div class="fh">&#10084;</div>
+                </div>
+                <div class="sparkles">
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                    <div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div><div class="sparkle"></div>
+                </div>
+                <div class="inner">
+                    <button class="top-btn" id="goHome">&#8593;</button>
+                    <div class="f-heart">&#10084;&#65039;</div>
+                    <p class="f-msg">Thank you for being a part<br>of our special day</p>
+                    <p class="f-sub">We can't wait to celebrate with you</p>
+                    <div class="divider" style="margin-bottom:22px">
+                        <div class="dv-line"></div>
+                        <div class="dv-dot"></div>
+                        <div class="dv-line"></div>
+                    </div>
+                    <p class="f-names">Praful &amp; Sushmita</p>
+                    <p class="f-copy">&#169; 2026 &middot; Made with love</p>
+                </div>
+            </div>
+
+        </div>
+
+        <script>
+            (function () {
+                const sections = document.querySelectorAll('.section');
+                const total = sections.length;
+                const dotNav = document.getElementById('dotNav');
+                let current = 0;
+                let locked = false;
+
+                // Build dot nav
+                for (let i = 0; i < total; i++) {
+                    const b = document.createElement('button');
+                    if (i === 0) b.classList.add('active');
+                    b.addEventListener('click', () => goTo(i));
+                    dotNav.appendChild(b);
+                }
+                const dots = dotNav.querySelectorAll('button');
+
+                function goTo(index) {
+                    if (index === current || locked || index < 0 || index >= total) return;
+                    locked = true;
+                    const dir = index > current ? 'up' : 'down';
+
+                    // Exit current
+                    sections[current].classList.remove('active');
+                    sections[current].classList.add(dir === 'up' ? 'exit-up' : 'exit-down');
+
+                    // Enter new
+                    sections[index].classList.remove('exit-up', 'exit-down');
+                    // Set starting position before transition
+                    sections[index].style.transition = 'none';
+                    sections[index].style.transform = dir === 'up' ? 'translateY(60px)' : 'translateY(-60px)';
+                    sections[index].style.opacity = '0';
+
+                    // Force reflow then animate
+                    sections[index].offsetHeight;
+                    sections[index].style.transition = '';
+                    sections[index].classList.add('active');
+                    sections[index].style.transform = '';
+                    sections[index].style.opacity = '';
+
+                    // Update dots
+                    dots[current].classList.remove('active');
+                    dots[index].classList.add('active');
+                    current = index;
+
+                    setTimeout(() => { locked = false; }, 650);
+                }
+
+                // Wheel
+                window.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    if (locked) return;
+                    if (e.deltaY > 0) goTo(current + 1);
+                    else goTo(current - 1);
+                }, { passive: false });
+
+                // Touch
+                let touchY = 0;
+                window.addEventListener('touchstart', (e) => { touchY = e.touches[0].clientY; }, { passive: true });
+                window.addEventListener('touchend', (e) => {
+                    const diff = touchY - e.changedTouches[0].clientY;
+                    if (Math.abs(diff) > 40) {
+                        if (diff > 0) goTo(current + 1);
+                        else goTo(current - 1);
+                    }
+                }, { passive: true });
+
+                // Keyboard
+                window.addEventListener('keydown', (e) => {
+                    if (e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+                    if (e.key === 'ArrowUp') { e.preventDefault(); goTo(current - 1); }
+                });
+
+                // Go home button
+                document.getElementById('goHome').addEventListener('click', () => goTo(0));
+
+                // Countdown
+                const T = new Date('2026-05-13T10:36:00+05:30').getTime();
+                function tick() {
+                    const d = T - Date.now();
+                    if (d <= 0) { ['cd-d', 'cd-h', 'cd-m', 'cd-s'].forEach(i => document.getElementById(i).textContent = '0'); return }
+                    document.getElementById('cd-d').textContent = Math.floor(d / 864e5);
+                    document.getElementById('cd-h').textContent = String(Math.floor((d / 36e5) % 24)).padStart(2, '0');
+                    document.getElementById('cd-m').textContent = String(Math.floor((d / 6e4) % 60)).padStart(2, '0');
+                    document.getElementById('cd-s').textContent = String(Math.floor((d / 1e3) % 60)).padStart(2, '0');
+                }
+                tick(); setInterval(tick, 1000);
+            })();
+        </script>
+    </body>
+
+</html>
